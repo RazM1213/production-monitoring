@@ -37,14 +37,18 @@ bootstrap_servers = [
     "kfs-maof-prod04:9092",
 ]
 
-producer = KafkaProducer(bootstrap_servers=bootstrap_servers, **SECURITY_CONFIG)
+producer = KafkaProducer(bootstrap_servers="localhost:9092")
 
-topic = "tyche.production-monitoring"
+topic = "TodoTopic"
 
 RESULTS = {
-    "example1": send_request("url_example1", 10, [200, 400, 500], {"test": "test", "test1": 1}),
-    "example2": send_request("url_example2", 5, [200, 400, 500, 503], {"test": "test", "test2": 2}, request_headers={"username": "example2"}),
-    "example3": send_request("url_example3", 17, [200, 400, 500, 401], {"test": "test", "test3": 1}, http_method="get"),
+    "example1": send_request("https://localhost:44302/api/Todos", 10, [200, 400, 500], http_method='get'),
+    "example2": send_request("https://localhost:44302/api/Todos", 5, [200, 400, 500], json_body={
+        "todoId": 0,
+        "listId": 1882,
+        "todoName": "PM Testing",
+        "finishDate": "2022-08-17T07:11:26.802Z"
+    })
 }
 
 
@@ -76,8 +80,8 @@ if __name__ == "__main__":
         error_index = 0
         for error_status_code in RESULTS[result].error_requests_info:
             error_requests_info.append(ErrorRequestInfo(error_status_code, []))
-            for error_requests_info in RESULTS[result].error_requests_info.get(error_status_code):
-                error_requests_info[error_index].order_positions.append(OrderPositionDetails(error_requests_info.position, error_requests_info.content))
+            for error_request_info in RESULTS[result].error_requests_info.get(error_status_code):
+                error_requests_info[error_index].order_positions.append(OrderPositionDetails(error_request_info.position, error_request_info.content))
 
             error_index += 1
 

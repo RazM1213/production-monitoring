@@ -20,17 +20,17 @@ def get_date_time_str(date: datetime):
     return date.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
 
-def receive_post_response_values(url: str, request_headers, json_body) -> List[ResponseValues]:
+def receive_post_response_values(url: str, json_body, request_headers=None) -> List[ResponseValues]:
     start_time = datetime.now()
-    request = requests.post(url=url, headers=request_headers, json=json_body)
+    request = requests.post(url=url, verify=False, json=json_body)
     if request.status_code / 100 == 2:
         return ResponseValues(datetime.now() - start_time, request.status_code)
     return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode("utf-8")))
 
 
-def receive_get_response_values(url: str, request_headers) -> List[ResponseValues]:
+def receive_get_response_values(url: str, request_headers=None) -> List[ResponseValues]:
     start_time = datetime.now()
-    request = requests.get(url=url, headers=request_headers)
+    request = requests.get(url=url, verify=False)
     if request.status_code / 100 == 2:
         return ResponseValues(datetime.now() - start_time, request.status_code)
     return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode("utf-8")))
@@ -50,7 +50,7 @@ def send_request(url: str, request_amount: int, status_codes: List[int], json_bo
         print(f"Send request number {str(count)}")
         count = count + 1
         if http_method == "post":
-            response = receive_post_response_values(url, request_headers, json_body)
+            response = receive_post_response_values(url, json_body, request_headers)
         elif http_method == "get":
             response = receive_get_response_values(url, request_headers)
 

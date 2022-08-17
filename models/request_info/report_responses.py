@@ -16,8 +16,8 @@ class ReportResponses:
         self.request_amount = request_amount
         self.request_times = []
         self.error_requests_info: Dict[int, List[ErrorRequest]] = {}
-        self.is_failed: bool = False
-        self.error_count: int = 0
+        self.is_failed = False
+        self.error_count = 0
         for status_code in status_codes:
             self.status_codes[status_code] = 0
             if status_code / 100 != 2:
