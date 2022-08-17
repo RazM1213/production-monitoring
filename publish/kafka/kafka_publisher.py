@@ -3,7 +3,7 @@ from typing import List
 
 from kafka import KafkaProducer
 
-from config.formats import ENCODE_FORMAT
+from consts.formats import ENCODE_FORMAT
 
 
 class KafkaPublisher:
