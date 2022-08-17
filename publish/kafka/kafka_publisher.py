@@ -4,9 +4,10 @@ from typing import List
 from kafka import KafkaProducer
 
 from consts.formats import ENCODE_FORMAT
+from publish.i_publisher import IPublisher
 
 
-class KafkaPublisher:
+class KafkaPublisher(IPublisher):
     def __init__(self, topic: str, bootstrap_servers: List[str]):
         self.topic = topic
         self.bootstrap_servers = bootstrap_servers
