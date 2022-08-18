@@ -7,6 +7,8 @@ from uuid import uuid4
 
 from kafka import KafkaProducer
 
+from config.environment_config import ENV_NAME
+from config.kafka_config import LOCALHOST_SERVER, TODO_TOPIC
 from models.elastic.elastic_report_response_doc import RunStat, ElasticReportResponseDoc, ReportStat
 from models.elastic.error_request_info import ErrorRequestInfo, OrderPositionDetails
 from models.elastic.request_time import RequestTime
@@ -23,23 +25,9 @@ class Encoder(JSONEncoder):
         return o.__dict__
 
 
-SECURITY_CONFIG = {
-    'security_protocol': "SASL_PLAINTEXT",
-    'sasl_mechanism': "SCRAM-SHA-256",
-    'sasl_plain_username': "tyche.production-monitoring_service",
-    'sasl_plain_password': "tyche123"
-}
+producer = KafkaProducer(bootstrap_servers=LOCALHOST_SERVER)
 
-bootstrap_servers = [
-    "kfs-maof-prod01:9092",
-    "kfs-maof-prod02:9092",
-    "kfs-maof-prod03:9092",
-    "kfs-maof-prod04:9092",
-]
-
-producer = KafkaProducer(bootstrap_servers="localhost:9092")
-
-topic = "TodoTopic"
+topic = TODO_TOPIC
 
 RESULTS = {
     "example1": send_request("https://localhost:44302/api/Todos", 10, [200, 400, 500], http_method='get'),
@@ -62,7 +50,7 @@ def get_status_code_info(status_code_list: List[StatusCodeCounter], status_code:
 
 
 if __name__ == "__main__":
-    environment = "znifim"
+    environment = ENV_NAME
 
     run_stat: RunStat = RunStat(environment)
     sum_request_times = 0
