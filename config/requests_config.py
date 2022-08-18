@@ -4,7 +4,7 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-TODO_URL = "https://localhost:44302/"
+TODO_GET_ROUTE = "https://localhost:44302/"
 
 POSSIBLE_STATUS_CODES = [200, 400, 404, 500]
 
