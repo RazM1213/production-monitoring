@@ -6,9 +6,6 @@ from send.request import Request
 
 
 class RequestSender:
-    def __init__(self, request: Request, amount: int):
-        self.request = request
-        self.amount = amount
-
-    def send_requests(self) -> List[Response]:
+    @staticmethod
+    def send_requests(request: Request, amount: int) -> List[Response]:
         pass
