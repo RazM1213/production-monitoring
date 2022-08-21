@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Dict
+
+from http_requests.http_methods import HttpMethods
 
 
 class Request:
-    def __init__(self, request_method: str, url: str, status_codes: List[str], request_body: dict = None, request_headers: dict = None):
-        self.request_method = request_method
-        self.url = url
-        self.status_codes = status_codes
-        self.request_body = request_body
-        self.request_headers = request_headers
+    request_method: HttpMethods
+    url: str
+    status_codes: List[int]
+    request_body: Dict
+    request_headers: Dict
