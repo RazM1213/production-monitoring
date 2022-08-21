@@ -32,7 +32,7 @@ def receive_get_response_values(url: str, request_headers) -> List[ResponseValue
     return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode(ENCODE_FORMAT)))
 
 
-def send_request(url: str, request_amount: int, status_codes: List[int] = None, json_body: str = None, http_method=HttpMethodsEnum.POST,request_headers=None) -> List[ReportResponses]:
+def send_request(url: str, request_amount: int, json_body: str = None, http_method=HttpMethodsEnum.POST,request_headers=None) -> List[ReportResponses]:
     if json_body is None:
         json_body = {}
 
