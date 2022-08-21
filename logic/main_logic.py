@@ -21,8 +21,8 @@ from results import send_request, get_date_time_str
 producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS)
 
 RESULTS = {
-    "get_requests": send_request("https://localhost:44302/api/Todos", 10, [200, 400, 500], http_method=HttpMethodsEnum.GET),
-    "post_requests": send_request("https://localhost:44302/api/Todos", 5, [200, 400, 404, 500], http_method=HttpMethodsEnum.POST,
+    "get_requests": send_request("https://localhost:44302/api/Todos", 10, http_method=HttpMethodsEnum.GET),
+    "post_requests": send_request("https://localhost:44302/api/Todos", 5, http_method=HttpMethodsEnum.POST,
                                   json_body={
                                       "todoId": 0,
                                       "listId": 0,
