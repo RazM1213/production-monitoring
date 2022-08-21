@@ -7,7 +7,7 @@ from typing import List, Dict
 class ErrorRequest:
     position: int
     content: str
-    
+
 
 @dataclass
 class ReportResponses:

@@ -38,7 +38,7 @@ def send_request(url: str, request_amount: int, status_codes: List[int], json_bo
 
     global count, response
     print(f"Start sending {str(request_amount)} requests to url - {url}")
-    responses = ReportResponses(status_codes, request_amount)
+    responses = ReportResponses(request_amount, status_codes)
 
     for request_amount_index in range(request_amount):
         print(f"Send request number {str(count)}")
