@@ -10,6 +10,10 @@ from models.request_info.response_values import ResponseValues
 
 class ResponseTransformer:
     @staticmethod
+    def get_report_responses() -> List[ReportResponses]:
+        pass
+    
+    @staticmethod
     def get_results_dict(routes: List[str]) -> Dict[str: str]:
         pass
 
@@ -26,6 +30,3 @@ class ResponseTransformer:
         request_times = list(map(lambda time: time.total_seconds(), responses.request_times))
         return RequestTime(sum(request_times) / len(request_times), max(request_times), min(request_times))
 
-    @staticmethod
-    def get_response_values(response: Response) -> ResponseValues:
-        pass
