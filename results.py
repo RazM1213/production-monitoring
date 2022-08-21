@@ -4,43 +4,37 @@ from typing import List
 
 import requests
 
+from consts.formats import EXACT_TIME_DATE_FORMAT, ENCODE_FORMAT
+from http_methods.http_methods_enum import HttpMethodsEnum
 from models.request_info.report_responses import ReportResponses, ErrorRequest
 from models.request_info.response_values import ResponseValues
-
-headers = {
-    "Authorization": "NoaBASH",
-    "username": "611nivb",
-    "Content-Type": "application/json"
-}
 
 count: int = 1
 
 
 def get_date_time_str(date: datetime):
-    return date.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    return date.strftime(EXACT_TIME_DATE_FORMAT)[:-3]
 
 
 def receive_post_response_values(url: str, request_headers, json_body) -> List[ResponseValues]:
     start_time = datetime.now()
-    request = requests.post(url=url, headers=request_headers, json=json_body)
+    request = requests.post(url=url, headers=request_headers, json=json_body, verify=False)
     if request.status_code / 100 == 2:
         return ResponseValues(datetime.now() - start_time, request.status_code)
-    return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode("utf-8")))
+    return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode(ENCODE_FORMAT)))
 
 
 def receive_get_response_values(url: str, request_headers) -> List[ResponseValues]:
     start_time = datetime.now()
-    request = requests.get(url=url, headers=request_headers)
+    request = requests.get(url=url, headers=request_headers, verify=False)
     if request.status_code / 100 == 2:
         return ResponseValues(datetime.now() - start_time, request.status_code)
-    return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode("utf-8")))
+    return ResponseValues(datetime.now() - start_time, request.status_code, str(request.content.decode(ENCODE_FORMAT)))
 
 
-def send_request(url: str, request_amount: int, status_codes: List[int], json_body: str = None, http_method = "post",                    request_headers=None) -> List[ReportResponses]:
+def send_request(url: str, request_amount: int, status_codes: List[int], json_body: str = None, http_method=HttpMethodsEnum.POST,request_headers=None) -> List[ReportResponses]:
     if json_body is None:
         json_body = {}
-    if request_headers is None:
-        request_headers = headers
 
     global count, response
     print(f"Start sending {str(request_amount)} requests to url - {url}")
@@ -49,9 +43,9 @@ def send_request(url: str, request_amount: int, status_codes: List[int], json_bo
     for request_amount_index in range(request_amount):
         print(f"Send request number {str(count)}")
         count = count + 1
-        if http_method == "post":
+        if http_method == HttpMethodsEnum.POST:
             response = receive_post_response_values(url, request_headers, json_body)
-        elif http_method == "get":
+        elif http_method == HttpMethodsEnum.GET:
             response = receive_get_response_values(url, request_headers)
 
         if response.status_code in responses.status_codes:
