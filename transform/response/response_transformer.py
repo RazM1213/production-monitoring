@@ -12,7 +12,7 @@ class ResponseTransformer:
     @staticmethod
     def get_report_responses() -> List[ReportResponses]:
         pass
-    
+
     @staticmethod
     def get_results_dict(routes: List[str]) -> Dict[str: str]:
         pass

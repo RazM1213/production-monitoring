@@ -21,10 +21,10 @@ class RequestSender:
                 responses.append(requests.get(url=request.url, headers=request.request_headers, verify=False))
             elif request.request_method == HttpMethodsEnum.POST:
                 responses.append(requests.post(url=request.url, headers=request.request_headers, json=request.request_body, verify=False))
-        return RequestSender.get_response_values(responses, start_time)
+        return RequestSender.get_responses_values(responses, start_time)
 
     @staticmethod
-    def get_response_values(responses: List[Response], start_time: datetime) -> List[ResponseValues]:
+    def get_responses_values(responses: List[Response], start_time: datetime) -> List[ResponseValues]:
         responses_values = []
         for response in responses:
             if response.status_code in SUCCESS_STATUS_CODES:
