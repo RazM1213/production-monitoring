@@ -9,5 +9,5 @@ class Request:
     request_method: HttpMethodsEnum
     url: str
     status_codes: List[int]
-    request_body: Dict
-    request_headers: Dict
+    request_body: Dict = None
+    request_headers: Dict = None
