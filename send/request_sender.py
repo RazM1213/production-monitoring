@@ -13,21 +13,18 @@ from send.request import Request
 
 class RequestSender:
     @staticmethod
-    def send_requests(request: Request, amount: int) -> List[ResponseValues]:
+    def send_request(request: Request) -> ResponseValues:
         start_time = datetime.now()
-        responses = []
-        for request_index in range(amount):
-            if request.request_method == HttpMethodsEnum.GET:
-                responses.append(requests.get(url=request.url, headers=request.request_headers, verify=False))
-            elif request.request_method == HttpMethodsEnum.POST:
-                responses.append(requests.post(url=request.url, headers=request.request_headers, json=request.request_body, verify=False))
-        return RequestSender.get_responses_values(responses, start_time)
+        response: Response = None
+
+        if request.request_method == HttpMethodsEnum.GET:
+            response = requests.get(url=request.url, headers=request.request_headers, verify=False)
+        elif request.request_method == HttpMethodsEnum.POST:
+            response = requests.post(url=request.url, headers=request.request_headers, json=request.request_body, verify=False)
+        return RequestSender.get_response_values(response, start_time)
 
     @staticmethod
-    def get_responses_values(responses: List[Response], start_time: datetime) -> List[ResponseValues]:
-        responses_values = []
-        for response in responses:
-            if response.status_code in SUCCESS_STATUS_CODES:
-                responses_values.append(ResponseValues(datetime.now() - start_time, response.status_code))
-            responses_values.append(ResponseValues(datetime.now() - start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT))))
-        return responses_values
+    def get_response_values(response: Response, start_time: datetime) -> ResponseValues:
+        if response.status_code in SUCCESS_STATUS_CODES:
+            return ResponseValues(datetime.now() - start_time, response.status_code)
+        return ResponseValues(datetime.now() - start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT)))
