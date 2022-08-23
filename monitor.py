@@ -1,9 +1,7 @@
 import threading
 
-from http_methods.http_methods_enum import HttpMethodsEnum
+from http_methods import http_method_func_mapping
 from publish.i_publisher import IPublisher
-from send.get_request_sender import GetRequestSender
-from send.post_request_sender import PostRequestSender
 from transform.response.response_transformer import ResponseTransformer
 
 
@@ -16,12 +14,8 @@ class Monitor:
     def send_requests_async(self):
         threads = []
         for request in self.requests:
-            if self.requests[request].request_method.value == HttpMethodsEnum.GET.value:
-                sender = GetRequestSender(self.requests[request])
-                threads.append(threading.Thread(target=sender.send_request))
-            elif self.requests[request].request_method.value == HttpMethodsEnum.POST.value:
-                sender = PostRequestSender(self.requests[request])
-                threads.append(threading.Thread(target=sender.send_request))
+            sender = http_method_func_mapping.HTTP_METHODS_FUNCS[self.requests[request].request_method.value]
+            threads.append(threading.Thread(target=sender, args=[self.requests[request]]))
 
         for thread in threads:
             thread.start()
