@@ -1,4 +1,4 @@
-from config.kafka_config import TOPIC, BOOTSTRAP_SERVERS
+from config.config import TOPIC, BOOTSTRAP_SERVERS
 from monitor import Monitor
 from publish.kafka.kafka_publisher import KafkaPublisher
 
