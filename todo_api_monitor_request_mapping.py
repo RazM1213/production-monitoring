@@ -7,7 +7,8 @@ REQUESTS = {
     "is_alive": Request(
         request_method=HttpMethodsEnum.GET,
         url=IS_ALIVE_URL,
-        status_codes=ALL_STATUS_CODES
+        status_codes=ALL_STATUS_CODES,
+        amount=5
     ),
     "get_all": Request(
         request_method=HttpMethodsEnum.GET,
