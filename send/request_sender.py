@@ -1,30 +1,24 @@
+from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List
 
-import requests
 from requests import Response
 
 from consts.formats import ENCODE_FORMAT
 from consts.status_codes import SUCCESS_STATUS_CODES
-from http_methods.http_methods_enum import HttpMethodsEnum
 from models.request_info.response_values import ResponseValues
 from send.request import Request
 
 
-class RequestSender:
-    @staticmethod
-    def send_request(request: Request) -> ResponseValues:
-        start_time = datetime.now()
-        response: Response = None
+class RequestSender(ABC):
+    def __init__(self, request: Request):
+        self.start_time = datetime.now()
+        self.request = request
 
-        if request.request_method == HttpMethodsEnum.GET:
-            response = requests.get(url=request.url, headers=request.request_headers, verify=False)
-        elif request.request_method == HttpMethodsEnum.POST:
-            response = requests.post(url=request.url, headers=request.request_headers, json=request.request_body, verify=False)
-        return RequestSender.get_response_values(response, start_time)
-
-    @staticmethod
-    def get_response_values(response: Response, start_time: datetime) -> ResponseValues:
+    def get_response_values(self, response: Response):
         if response.status_code in SUCCESS_STATUS_CODES:
-            return ResponseValues(datetime.now() - start_time, response.status_code)
-        return ResponseValues(datetime.now() - start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT)))
+            return ResponseValues(datetime.now() - self.start_time, response.status_code)
+        return ResponseValues(datetime.now() - self.start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT)))
+
+    @abstractmethod
+    def send_request(self) -> ResponseValues:
+        pass
