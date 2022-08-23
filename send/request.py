@@ -11,3 +11,4 @@ class Request:
     status_codes: List[int]
     request_body: Dict = None
     request_headers: Dict = None
+    amount: int = 1
