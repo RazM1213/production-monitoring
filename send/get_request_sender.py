@@ -6,7 +6,7 @@ from send.request_sender import RequestSender
 
 class GetRequestSender(RequestSender):
     def __init__(self, request: Request):
-        super().__init__(request)
+        super().__init__()
         self.request = request
 
     def send_request(self):
