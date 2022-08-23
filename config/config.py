@@ -1,7 +1,9 @@
 import yaml
 from yaml import Loader
 
-with open("configs.yaml", "r") as yaml_file:
+from consts.paths import ABSOLUTE_PATH_YAML
+
+with open(ABSOLUTE_PATH_YAML, "r") as yaml_file:
     CONFIG = yaml.load(yaml_file, Loader=Loader)
 
 ENV_NAME = CONFIG["env"]["env_name"]
