@@ -8,17 +8,19 @@ REQUESTS = {
         request_method=HttpMethodsEnum.GET,
         url=IS_ALIVE_URL,
         status_codes=ALL_STATUS_CODES,
-        amount=5
+        amount=10
     ),
     "get_all": Request(
         request_method=HttpMethodsEnum.GET,
         url=API_TODOS_URL,
-        status_codes=ALL_STATUS_CODES
+        status_codes=ALL_STATUS_CODES,
+        amount=5
     ),
     "post_todo": Request(
         request_method=HttpMethodsEnum.POST,
         url=API_TODOS_URL,
         status_codes=ALL_STATUS_CODES,
-        request_body=POST_REQUEST_BODY
+        request_body=POST_REQUEST_BODY,
+        amount=2
     )
 }
