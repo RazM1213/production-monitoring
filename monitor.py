@@ -1,6 +1,5 @@
 import threading
 
-import todo_api_monitor_request_mapping
 from http_methods.http_methods_enum import HttpMethodsEnum
 from publish.i_publisher import IPublisher
 from send.get_request_sender import GetRequestSender
@@ -9,8 +8,8 @@ from transform.response.response_transformer import ResponseTransformer
 
 
 class Monitor:
-    def __init__(self, publisher: IPublisher):
-        self.requests = todo_api_monitor_request_mapping.REQUESTS
+    def __init__(self, requests: dict, publisher: IPublisher):
+        self.requests = requests
         self.response_transformer = ResponseTransformer()
         self.publisher = publisher
 
