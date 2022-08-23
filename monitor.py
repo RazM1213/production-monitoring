@@ -1,10 +1,7 @@
 import threading
 
-import todo_api_monitor_request_mapping
-from config.config import TOPIC, BOOTSTRAP_SERVERS
 from http_methods import http_method_func_mapping
 from publish.i_publisher import IPublisher
-from publish.kafka.kafka_publisher import KafkaPublisher
 from transform.response.response_transformer import ResponseTransformer
 
 
@@ -26,8 +23,3 @@ class Monitor:
 
     def start(self):
         self.send_requests_async()
-
-
-if __name__ == "__main__":
-    monitor = Monitor(todo_api_monitor_request_mapping.REQUESTS, KafkaPublisher(TOPIC, BOOTSTRAP_SERVERS))
-    monitor.start()
