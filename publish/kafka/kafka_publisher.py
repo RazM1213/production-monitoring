@@ -3,7 +3,6 @@ from typing import List
 
 from kafka import KafkaProducer
 
-from config.config import CONFIG
 from consts.formats import ENCODE_FORMAT
 from models.elastic.elastic_report_response_doc import ElasticReportResponseDoc
 from publish.i_publisher import IPublisher
