@@ -11,5 +11,5 @@ class PostRequestSender(RequestSender):
         self.request = request
 
     def send_request(self) -> ResponseValues:
-        response = requests.post(url=self.request.url, headers=self.request.request_headers, json=self.request.request_body, verify=False)
+        response = requests.post(url=self.request[0].url, headers=self.request[0].request_headers, json=self.request[0].request_body, verify=False)
         return self.get_response_values(response)
