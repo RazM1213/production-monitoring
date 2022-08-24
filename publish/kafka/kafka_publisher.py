@@ -4,6 +4,7 @@ from typing import List
 from kafka import KafkaProducer
 
 from consts.formats import ENCODE_FORMAT
+from encoder.json_encoder import Encoder
 from models.elastic.elastic_report_response_doc import ElasticReportResponseDoc
 from publish.i_publisher import IPublisher
 
@@ -15,5 +16,5 @@ class KafkaPublisher(IPublisher):
         self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers)
 
     def publish(self, report: ElasticReportResponseDoc):
-        self.producer.send(topic=self.topic, value=json.dumps(report).encode(ENCODE_FORMAT)).get()
+        self.producer.send(topic=self.topic, value=str(json.dumps(report, cls=Encoder)).encode(ENCODE_FORMAT))
         print("Published Message to Kafka topic{}:\n {}".format(str(report), self.topic))
