@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 
-from http_methods.http_methods_enum import HttpMethodsEnum
+from utils.http_methods.http_methods_enum import HttpMethodsEnum
 
 
 @dataclass

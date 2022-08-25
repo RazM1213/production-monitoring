@@ -3,7 +3,7 @@ import threading
 import time
 from typing import List, Dict
 
-from http_methods import http_method_func_mapping
+from utils.http_methods import http_method_func_mapping
 from models.request_info.response_values import ResponseValues
 from publish.i_publisher import IPublisher
 from send.request import Request

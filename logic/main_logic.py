@@ -5,11 +5,11 @@ from uuid import uuid4
 
 from kafka import KafkaProducer
 
-from config.environment_config import ENV_NAME
-from config.kafka_config import BOOTSTRAP_SERVERS, TOPIC
+from config.config import ENV_NAME
+from config.config import BOOTSTRAP_SERVERS, TOPIC
 from consts.formats import ENCODE_FORMAT
-from encoder.json_encoder import Encoder
-from http_methods.http_methods_enum import HttpMethodsEnum
+from utils.encoder.json_encoder import Encoder
+from utils.http_methods.http_methods_enum import HttpMethodsEnum
 from models.elastic.elastic_report_response_doc import RunStat, ElasticReportResponseDoc, ReportStat
 from models.elastic.error_request_info import ErrorRequestInfo, OrderPositionDetails
 from models.elastic.request_time import RequestTime

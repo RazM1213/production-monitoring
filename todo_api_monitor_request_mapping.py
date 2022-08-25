@@ -1,6 +1,6 @@
 from config.config import IS_ALIVE_URL, API_TODOS_URL, POST_REQUEST_BODY
 from consts.status_codes import ALL_STATUS_CODES
-from http_methods.http_methods_enum import HttpMethodsEnum
+from utils.http_methods.http_methods_enum import HttpMethodsEnum
 from send.request import Request
 
 REQUESTS = {

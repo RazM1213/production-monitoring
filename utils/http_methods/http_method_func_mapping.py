@@ -1,4 +1,4 @@
-from http_methods.http_methods_enum import HttpMethodsEnum
+from utils.http_methods.http_methods_enum import HttpMethodsEnum
 from send.get_request_sender import GetRequestSender
 from send.post_request_sender import PostRequestSender
 

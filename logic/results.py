@@ -5,7 +5,7 @@ from typing import List
 import requests
 
 from consts.formats import EXACT_TIME_DATE_FORMAT, ENCODE_FORMAT
-from http_methods.http_methods_enum import HttpMethodsEnum
+from utils.http_methods.http_methods_enum import HttpMethodsEnum
 from models.request_info.report_responses import ReportResponses, ErrorRequest
 from models.request_info.response_values import ResponseValues
 
