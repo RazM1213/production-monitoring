@@ -17,4 +17,4 @@ class KafkaPublisher(IPublisher):
 
     def publish(self, report: ElasticReportResponseDoc):
         self.producer.send(topic=self.topic, value=str(json.dumps(report, cls=Encoder)).encode(ENCODE_FORMAT))
-        print("Published Message to Kafka topic{}:\n {}".format(str(report), self.topic))
+        print("Published Message to Kafka topic{}:\n {}".format(str(json.dumps(report, cls=Encoder)).encode(ENCODE_FORMAT), self.topic))

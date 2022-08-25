@@ -25,7 +25,7 @@ class Monitor:
 
         for thread in threads:
             thread.start()
-        time.sleep(0.3)
+        time.sleep(1)
         return list(response_values.queue)
 
     def start(self):
