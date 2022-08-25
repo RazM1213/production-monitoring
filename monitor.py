@@ -29,13 +29,11 @@ class Monitor:
         return list(response_values.queue)
 
     def start(self):
-        reports = []
         for route_name in self.requests:
-            reports.append(self.response_transformer.get_elastic_report_doc(
+            responses = self.send_requests_async(route_name)
+            report_responses = self.response_transformer.get_report_responses(responses)
+            elastic_report_doc = self.response_transformer.get_elastic_report_doc(
                 route_name,
-                self.response_transformer.get_report_responses(self.send_requests_async(route_name))
-                )
+                report_responses
             )
-
-        for report in reports:
-            self.publisher.publish(report)
+            self.publisher.publish(elastic_report_doc)
