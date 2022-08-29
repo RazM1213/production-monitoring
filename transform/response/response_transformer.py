@@ -39,6 +39,9 @@ class ResponseTransformer:
 
             response_values_index += 1
 
+        if report_responses.status_codes == {}:
+            report_responses.is_failed = True
+
         return report_responses
 
     @staticmethod
@@ -74,6 +77,6 @@ class ResponseTransformer:
     @staticmethod
     def get_request_time(responses: ReportResponses) -> List[RequestTime]:
         request_times = list(map(lambda time: time.total_seconds(), responses.request_times))
-        if request_times != 0:
+        if len(request_times) != 0:
             return RequestTime(sum(request_times) / len(request_times), max(request_times), min(request_times))
         return RequestTime()
