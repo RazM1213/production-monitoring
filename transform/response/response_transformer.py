@@ -62,6 +62,9 @@ class ResponseTransformer:
 
             error_index += 1
 
+        if not error_requests_info and not status_codes_info:
+            error_requests_info = "SERVER IS DOWN"
+
         return ElasticReportResponseDoc(
             name=route_name,
             time=datetime.now().strftime(EXACT_TIME_DATE_FORMAT)[:-3],
