@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 
 from models.request_info.response_values import ResponseValues
@@ -11,5 +13,8 @@ class GetRequestSender(RequestSender):
         self.request = request
 
     def send_request(self) -> ResponseValues:
-        response = requests.get(url=self.request[0].url, headers=self.request[0].request_headers, verify=False)
-        return self.get_response_values(response)
+        try:
+            response = requests.get(url=self.request[0].url, headers=self.request[0].request_headers, verify=False)
+            return self.get_response_values(response)
+        except requests.exceptions.ConnectionError:
+            return ResponseValues(datetime.now() - self.start_time)
