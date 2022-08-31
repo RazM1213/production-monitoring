@@ -1,10 +1,12 @@
 import asyncio
+import json
 from datetime import datetime
 from typing import List, Dict
 
 import aiohttp
 from aiohttp import ClientResponse
 
+from consts.formats import ENCODE_FORMAT
 from consts.status_codes import SUCCESS_STATUS_CODES
 from models.request_info.response_values import ResponseValues
 from publish.i_publisher import IPublisher
@@ -19,6 +21,7 @@ class Monitor:
         self.response_transformer = ResponseTransformer()
         self.publisher = publisher
         self.start_time = None
+        self.contents = []
 
     async def send_requests_async(self, route_name: str) -> List[ClientResponse]:
         async with aiohttp.ClientSession() as session:
@@ -28,15 +31,20 @@ class Monitor:
                 tasks.append(sender(self.requests[route_name], session))
             self.start_time = datetime.now()
             responses = await asyncio.gather(*tasks)
+        for response in responses:
+            content = await response.content.read()
+            self.contents.append(json.loads(content.decode(ENCODE_FORMAT))['message'])
         return responses
 
     def get_responses_values(self, client_responses: List[ClientResponse]) -> List[ResponseValues]:
         responses_values = []
+        count = 0
         for client_response in client_responses:
             if client_response.status in SUCCESS_STATUS_CODES:
                 responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status))
             else:
-                responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status, str(client_response.content)))
+                responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status, self.contents[count]))
+            count += 1
         return responses_values
 
     def start(self):

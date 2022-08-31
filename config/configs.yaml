@@ -6,7 +6,7 @@ kafka:
   bootstrap_servers: [localhost:9092]
 
 url:
-  is_alive_url: https://localhost:44302/status/isalive
+  is_alive_url: https://petstore.swagger.io/v2/pet/322717570?ID=1
   api_todos_url: https://localhost:44302/api/Todos
 
 request_body:
