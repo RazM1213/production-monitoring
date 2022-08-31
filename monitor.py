@@ -1,13 +1,16 @@
-import queue
-import threading
-import time
+import asyncio
+from datetime import datetime
 from typing import List, Dict
 
-from utils.http_methods import http_method_func_mapping
+import aiohttp
+from aiohttp import ClientResponse
+
+from consts.status_codes import SUCCESS_STATUS_CODES
 from models.request_info.response_values import ResponseValues
 from publish.i_publisher import IPublisher
 from send.request import Request
 from transform.response.response_transformer import ResponseTransformer
+from utils.http_methods import http_method_func_mapping
 
 
 class Monitor:
@@ -15,23 +18,33 @@ class Monitor:
         self.requests = requests
         self.response_transformer = ResponseTransformer()
         self.publisher = publisher
+        self.start_time = None
 
-    def send_requests_async(self, route_name: str) -> List[ResponseValues]:
-        threads = []
-        response_values = queue.Queue()
-        for request_index in range(self.requests[route_name].amount):
-            sender = http_method_func_mapping.HTTP_METHODS_FUNCS[self.requests[route_name].request_method.value]
-            threads.append(threading.Thread(target=sender, args=([self.requests[route_name]], response_values)))
+    async def send_requests_async(self, route_name: str) -> List[ClientResponse]:
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for request_index in range(self.requests[route_name].amount):
+                sender = http_method_func_mapping.HTTP_METHODS_FUNCS[self.requests[route_name].request_method.value]
+                tasks.append(sender(self.requests[route_name], session))
+            self.start_time = datetime.now()
+            responses = await asyncio.gather(*tasks)
+        return responses
 
-        for thread in threads:
-            thread.start()
-        time.sleep(1)
-        return list(response_values.queue)
+    def get_responses_values(self, client_responses: List[ClientResponse]) -> List[ResponseValues]:
+        responses_values = []
+        for client_response in client_responses:
+            if client_response.status in SUCCESS_STATUS_CODES:
+                responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status))
+            else:
+                responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status, str(client_response.content)))
+        return responses_values
 
     def start(self):
         for route_name in self.requests:
-            responses = self.send_requests_async(route_name)
-            report_responses = self.response_transformer.get_report_responses(responses)
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+            responses = asyncio.run(self.send_requests_async(route_name))
+            responses_values = self.get_responses_values(responses)
+            report_responses = self.response_transformer.get_report_responses(responses_values)
             elastic_report_doc = self.response_transformer.get_elastic_report_doc(
                 route_name,
                 report_responses

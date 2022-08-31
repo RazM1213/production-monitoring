@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from asyncio import Task
 from datetime import datetime
 
 from requests import Response
@@ -18,5 +19,5 @@ class RequestSender(ABC):
         return ResponseValues(datetime.now() - self.start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT)))
 
     @abstractmethod
-    def send_request(self) -> ResponseValues:
+    def send_request(self, session) -> Task:
         pass

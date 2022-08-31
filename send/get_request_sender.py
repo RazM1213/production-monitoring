@@ -1,6 +1,6 @@
-from datetime import datetime
+import asyncio
 
-import requests
+from aiohttp import ClientSession
 
 from models.request_info.response_values import ResponseValues
 from send.request import Request
@@ -12,9 +12,6 @@ class GetRequestSender(RequestSender):
         super().__init__()
         self.request = request
 
-    def send_request(self) -> ResponseValues:
-        try:
-            response = requests.get(url=self.request[0].url, headers=self.request[0].request_headers, verify=False)
-            return self.get_response_values(response)
-        except requests.exceptions.ConnectionError:
-            return ResponseValues(datetime.now() - self.start_time)
+    def send_request(self, session: ClientSession) -> ResponseValues:
+        task = asyncio.create_task(session.get(url=self.request.url, headers=self.request.request_headers, ssl=False))
+        return task
