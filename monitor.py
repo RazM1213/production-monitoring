@@ -7,7 +7,6 @@ import aiohttp
 from aiohttp import ClientResponse
 
 from consts.formats import ENCODE_FORMAT
-from consts.status_codes import SUCCESS_STATUS_CODES
 from models.request_info.response_values import ResponseValues
 from publish.i_publisher import IPublisher
 from send.request import Request
@@ -23,6 +22,7 @@ class Monitor:
         self.start_time = None
         self.contents = []
 
+    # todo: talk with aviv about the rate limiter exception
     async def send_requests_async(self, route_name: str) -> List[ClientResponse]:
         async with aiohttp.ClientSession() as session:
             tasks = []
@@ -31,16 +31,25 @@ class Monitor:
                 tasks.append(sender(self.requests[route_name], session))
             self.start_time = datetime.now()
             responses = await asyncio.gather(*tasks)
-        for response in responses:
-            content = await response.content.read()
-            self.contents.append(json.loads(content.decode(ENCODE_FORMAT))['message'])
+
+        await self.get_contents(responses)
         return responses
+
+    async def get_contents(self, client_responses: List[ClientResponse]):
+        for response in client_responses:
+            if not Monitor.is_success_status_code(response.status):
+                content = await response.content.read()
+                self.contents.append(json.loads(content.decode(ENCODE_FORMAT)))
+
+    @staticmethod
+    def is_success_status_code(status):
+        return status // 100 == 2
 
     def get_responses_values(self, client_responses: List[ClientResponse]) -> List[ResponseValues]:
         responses_values = []
         count = 0
         for client_response in client_responses:
-            if client_response.status in SUCCESS_STATUS_CODES:
+            if Monitor.is_success_status_code(client_response.status):
                 responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status))
             else:
                 responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status, self.contents[count]))

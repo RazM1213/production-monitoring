@@ -1,5 +1,4 @@
-import time
-from datetime import timedelta, datetime
+from datetime import datetime
 from typing import List
 
 from config.config import ENV_NAME
@@ -24,18 +23,17 @@ class ResponseTransformer:
                 report_responses.status_codes[response_values.status_code] += 1
             else:
                 report_responses.status_codes[response_values.status_code] = 1
+                # todo: change it to Monitor.is_success_status_code
                 if response_values.status_code not in SUCCESS_STATUS_CODES:
                     report_responses.error_requests_info[response_values.status_code] = []
 
+            # todo: change it to Monitor.is_success_status_code
             if response_values.status_code not in SUCCESS_STATUS_CODES:
                 report_responses.error_requests_info[response_values.status_code].append(ErrorRequest(response_values_index, response_values.error_content))
                 report_responses.error_count += 1
                 report_responses.is_failed = True
 
             report_responses.request_times.append(response_values.time)
-
-            if response_values.time < timedelta(microseconds=100):
-                time.sleep(0.1)
 
             response_values_index += 1
 
@@ -61,9 +59,6 @@ class ResponseTransformer:
                 error_requests_info[error_index].order_positions.append(OrderPositionDetails(error_request_info.position, error_request_info.content))
 
             error_index += 1
-
-        if not error_requests_info and not status_codes_info:
-            error_requests_info = "SERVER IS DOWN"
 
         return ElasticReportResponseDoc(
             name=route_name,
