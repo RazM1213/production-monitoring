@@ -41,10 +41,6 @@ class Monitor:
                 content = await response.content.read()
                 self.contents.append(json.loads(content.decode(ENCODE_FORMAT)))
 
-    @staticmethod
-    def is_success_status_code(status):
-        return status // 100 == 2
-
     def get_responses_values(self, client_responses: List[ClientResponse]) -> List[ResponseValues]:
         responses_values = []
         count = 0
