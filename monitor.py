@@ -53,13 +53,13 @@ class Monitor:
         return responses_values
 
     def start(self):
-        for route_name in self.requests:
+        for route in self.requests:
             asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-            responses = asyncio.run(self.send_requests_async(route_name))
+            responses = asyncio.run(self.send_requests_async(route))
             responses_values = self.get_responses_values(responses)
             report_responses = self.response_transformer.get_report_responses(responses_values)
             elastic_report_doc = self.response_transformer.get_elastic_report_doc(
-                route_name,
+                route,
                 report_responses
             )
             self.publisher.publish(elastic_report_doc)
