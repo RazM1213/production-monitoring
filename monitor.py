@@ -37,7 +37,7 @@ class Monitor:
 
     async def get_contents(self, client_responses: List[ClientResponse]):
         for response in client_responses:
-            if not Monitor.is_success_status_code(response.status):
+            if not response.status // 100 == 2:
                 content = await response.content.read()
                 self.contents.append(json.loads(content.decode(ENCODE_FORMAT)))
 
@@ -49,7 +49,7 @@ class Monitor:
         responses_values = []
         count = 0
         for client_response in client_responses:
-            if Monitor.is_success_status_code(client_response.status):
+            if client_response.status // 100 == 2:
                 responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status))
             else:
                 responses_values.append(ResponseValues(datetime.now() - self.start_time, client_response.status, self.contents[count]))

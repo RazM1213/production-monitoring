@@ -21,6 +21,6 @@ REQUESTS = {
         url=BASE_URL + ROUTE_2,
         status_codes=ALL_STATUS_CODES,
         request_body=POST_REQUEST_BODY,
-        amount=2
+        amount=10
     )
 }

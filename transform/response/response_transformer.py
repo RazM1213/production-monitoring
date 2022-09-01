@@ -23,12 +23,10 @@ class ResponseTransformer:
                 report_responses.status_codes[response_values.status_code] += 1
             else:
                 report_responses.status_codes[response_values.status_code] = 1
-                # todo: change it to Monitor.is_success_status_code
-                if response_values.status_code not in SUCCESS_STATUS_CODES:
+                if response_values.status_code // 100 != 2:
                     report_responses.error_requests_info[response_values.status_code] = []
 
-            # todo: change it to Monitor.is_success_status_code
-            if response_values.status_code not in SUCCESS_STATUS_CODES:
+            if response_values.status_code // 100 != 2:
                 report_responses.error_requests_info[response_values.status_code].append(ErrorRequest(response_values_index, response_values.error_content))
                 report_responses.error_count += 1
                 report_responses.is_failed = True
