@@ -4,9 +4,9 @@ from typing import List
 from kafka import KafkaProducer
 
 from consts.formats import ENCODE_FORMAT
-from utils.encoder.json_encoder import Encoder
 from models.elastic.elastic_report_response_doc import ElasticReportResponseDoc
 from publish.i_publisher import IPublisher
+from utils.encoder.json_encoder import Encoder
 
 
 class KafkaPublisher(IPublisher):

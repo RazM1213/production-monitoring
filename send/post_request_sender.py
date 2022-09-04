@@ -15,4 +15,3 @@ class PostRequestSender(RequestSender):
     def send_request(self, session: ClientSession) -> Task:
         task = asyncio.create_task(session.post(url=self.request.url, headers=self.request.request_headers, json=self.request.request_body, ssl=False))
         return task
-

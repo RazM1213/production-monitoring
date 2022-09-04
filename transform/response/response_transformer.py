@@ -3,7 +3,6 @@ from typing import List
 
 from config.config import ENV_NAME
 from consts.formats import EXACT_TIME_DATE_FORMAT
-from consts.status_codes import SUCCESS_STATUS_CODES
 from models.elastic.elastic_report_response_doc import ElasticReportResponseDoc, ReportStat
 from models.elastic.error_request_info import ErrorRequestInfo, OrderPositionDetails
 from models.elastic.request_time import RequestTime
