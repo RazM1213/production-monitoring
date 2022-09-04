@@ -1,8 +1,8 @@
 import json
 import logging
 from typing import List
-import coloredlogs
 
+import coloredlogs
 from kafka import KafkaProducer
 
 from consts.formats import ENCODE_FORMAT
