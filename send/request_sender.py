@@ -13,11 +13,6 @@ class RequestSender(ABC):
     def __init__(self):
         self.start_time = datetime.now()
 
-    def get_response_values(self, response: Response):
-        if response.status_code in SUCCESS_STATUS_CODES:
-            return ResponseValues(datetime.now() - self.start_time, response.status_code)
-        return ResponseValues(datetime.now() - self.start_time, response.status_code, str(response.content.decode(ENCODE_FORMAT)))
-
     @abstractmethod
     def send_request(self, session) -> Task:
         pass
