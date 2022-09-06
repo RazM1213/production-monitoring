@@ -25,7 +25,14 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertEqual(report_responses.request_times, [datetime.timedelta(microseconds=1000)])
 
     def test_invalid_get_report_responses_empty_list(self):
-        pass
+        # Arrange
+        responses_values = []
+
+        # Act
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+
+        # Assert
+        self.assertEqual(report_responses, None)
 
     def test_valid_get_report_responses_more_than_one_item_list(self):
         pass
