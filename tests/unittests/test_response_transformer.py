@@ -7,6 +7,7 @@ import parameterized as parameterized
 from config.config import ENV_NAME
 from consts.formats import EXACT_TIME_DATE_FORMAT
 from models.elastic.elastic_report_response_doc import ReportStat
+from models.elastic.error_request_info import ErrorRequestInfo
 from models.elastic.status_code_info_doc import StatusCodesInfo
 from models.request_info.report_responses import ErrorRequest, ReportResponses
 from models.request_info.response_values import ResponseValues
@@ -103,6 +104,38 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertIsInstance(elastic_report_response_doc.status_code_info, StatusCodesInfo)
         self.assertIsInstance(elastic_report_response_doc.report_stat, ReportStat)
         self.assertEqual(elastic_report_response_doc.run_stat, ENV_NAME)
+
+    def test_valid_get_elastic_report_doc_success_status_codes_info(self):
+        # Arrange
+        responses_values = [ResponseValues(timedelta(microseconds=1000), 200)]
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+        route_name = "Test"
+
+        # Act
+        elastic_report_response_doc = ResponseTransformer.get_elastic_report_doc(route_name=route_name, report_responses=report_responses)
+
+        # Assert
+        self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].status_code, 200)
+        self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].count, 1)
+        self.assertEqual(elastic_report_response_doc.status_code_info.error_requests_info, [])
+        self.assertEqual(elastic_report_response_doc.status_code_info.is_failed, False)
+        self.assertEqual(elastic_report_response_doc.status_code_info.error_count, 0)
+
+    def test_valid_get_elastic_report_doc_non_success_status_codes_info(self):
+        # Arrange
+        responses_values = [ResponseValues(timedelta(microseconds=1000), 400)]
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+        route_name = "Test"
+
+        # Act
+        elastic_report_response_doc = ResponseTransformer.get_elastic_report_doc(route_name=route_name, report_responses=report_responses)
+
+        # Assert
+        self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].status_code, 400)
+        self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].count, 1)
+        self.assertIsInstance(elastic_report_response_doc.status_code_info.error_requests_info[0], ErrorRequestInfo)
+        self.assertEqual(elastic_report_response_doc.status_code_info.is_failed, True)
+        self.assertEqual(elastic_report_response_doc.status_code_info.error_count, 1)
 
     def test_get_status_code_info(self):
         pass
