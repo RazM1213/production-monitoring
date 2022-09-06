@@ -2,7 +2,6 @@ import datetime
 import unittest
 from datetime import timedelta
 
-from models.request_info.report_responses import ReportResponses
 from models.request_info.response_values import ResponseValues
 from transform.response.response_transformer import ResponseTransformer
 
@@ -16,7 +15,6 @@ class TestResponseTransformer(unittest.TestCase):
         report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
 
         # Assert
-        self.assertIsInstance(report_responses, ReportResponses)
         self.assertEqual(report_responses.request_amount, 1)
         self.assertEqual(report_responses.status_codes, {200: 1})
         self.assertEqual(report_responses.error_requests_info, {})
@@ -42,7 +40,6 @@ class TestResponseTransformer(unittest.TestCase):
         report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
 
         # Assert
-        self.assertIsInstance(report_responses, ReportResponses)
         self.assertEqual(report_responses.request_amount, 2)
         self.assertEqual(report_responses.status_codes, {200: 1, 404: 1})
         self.assertEqual(report_responses.is_failed, True)
