@@ -41,9 +41,6 @@ class ResponseTransformer:
 
             response_values_index += 1
 
-        if report_responses.status_codes == {}:
-            report_responses.is_failed = True
-
         return report_responses
 
     @staticmethod
