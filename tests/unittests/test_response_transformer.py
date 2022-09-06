@@ -35,7 +35,18 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertEqual(report_responses, None)
 
     def test_valid_get_report_responses_more_than_one_item_list(self):
-        pass
+        # Arrange
+        responses_values = [ResponseValues(timedelta(microseconds=1000), 200), ResponseValues(timedelta(microseconds=1000), 404)]
+
+        # Act
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+
+        # Assert
+        self.assertIsInstance(report_responses, ReportResponses)
+        self.assertEqual(report_responses.request_amount, 2)
+        self.assertEqual(report_responses.status_codes, {200: 1, 404: 1})
+        self.assertEqual(report_responses.is_failed, True)
+        self.assertEqual(report_responses.error_count, 1)
 
     def test_get_elastic_report_doc(self):
         pass
