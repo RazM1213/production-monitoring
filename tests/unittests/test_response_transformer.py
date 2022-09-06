@@ -2,6 +2,9 @@ import datetime
 import unittest
 from datetime import timedelta
 
+import parameterized as parameterized
+
+from models.request_info.report_responses import ErrorRequest
 from models.request_info.response_values import ResponseValues
 from transform.response.response_transformer import ResponseTransformer
 
@@ -66,6 +69,21 @@ class TestResponseTransformer(unittest.TestCase):
 
         # Assert
         self.assertEqual(report_responses, None)
+
+    @parameterized.parameterized.expand([
+        (300, ),
+        (300, ),
+        (300, )
+    ])
+    def test_invalid_get_report_responses_non_success_status_code(self, status_code):
+        # Arrange
+        responses_values = [ResponseValues(timedelta(microseconds=1000), status_code)]
+
+        # Act
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+
+        # Assert
+        self.assertIsInstance(report_responses.error_requests_info[status_code][0], ErrorRequest)
 
     def test_get_elastic_report_doc(self):
         pass
