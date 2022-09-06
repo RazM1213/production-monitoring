@@ -16,5 +16,5 @@ class ReportResponses:
     error_requests_info: Dict[int, List[ErrorRequest]] = field(default_factory=lambda: {})
     is_failed: bool = False
     error_count: int = 0
-    time: datetime = datetime.now()
+    # time: datetime = datetime.now()
     request_times: List[int] = field(default_factory=lambda: [])
