@@ -16,7 +16,7 @@ class ResponseTransformer:
     @staticmethod
     def get_report_responses(responses_values: List[ResponseValues]) -> ReportResponses:
         report_responses = ReportResponses(request_amount=len(responses_values))
-        if report_responses.request_amount == 0:
+        if report_responses.request_amount == 0 or report_responses.status_codes == {}:
             return None
         response_values_index = 0
         for response_values in responses_values:
