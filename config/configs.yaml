@@ -2,7 +2,7 @@ env:
   env_name: test
 
 kafka:
-  topic: PMTestTopic
+  topic: PMTopic
   bootstrap_servers: [ localhost:9092 ]
 
 url:
