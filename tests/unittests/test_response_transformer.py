@@ -4,7 +4,11 @@ from datetime import timedelta
 
 import parameterized as parameterized
 
-from models.request_info.report_responses import ErrorRequest
+from config.config import ENV_NAME
+from consts.formats import EXACT_TIME_DATE_FORMAT
+from models.elastic.elastic_report_response_doc import ReportStat
+from models.elastic.status_code_info_doc import StatusCodesInfo
+from models.request_info.report_responses import ErrorRequest, ReportResponses
 from models.request_info.response_values import ResponseValues
 from transform.response.response_transformer import ResponseTransformer
 
@@ -71,9 +75,9 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertEqual(report_responses, None)
 
     @parameterized.parameterized.expand([
-        (300, ),
-        (300, ),
-        (300, )
+        (300,),
+        (300,),
+        (300,)
     ])
     def test_invalid_get_report_responses_non_success_status_code(self, status_code):
         # Arrange
@@ -85,8 +89,20 @@ class TestResponseTransformer(unittest.TestCase):
         # Assert
         self.assertIsInstance(report_responses.error_requests_info[status_code][0], ErrorRequest)
 
-    def test_get_elastic_report_doc(self):
-        pass
+    def test_valid_get_elastic_report_doc_default_report_responses(self):
+        # Arrange
+        report_responses = ReportResponses(request_amount=1)
+        route_name = "Test"
+
+        # Act
+        elastic_report_response_doc = ResponseTransformer.get_elastic_report_doc(route_name=route_name, report_responses=report_responses)
+
+        # Assert
+        self.assertEqual(elastic_report_response_doc.name, route_name)
+        self.assertIsInstance(datetime.datetime.strptime(elastic_report_response_doc.time, EXACT_TIME_DATE_FORMAT), datetime.datetime)
+        self.assertIsInstance(elastic_report_response_doc.status_code_info, StatusCodesInfo)
+        self.assertIsInstance(elastic_report_response_doc.report_stat, ReportStat)
+        self.assertEqual(elastic_report_response_doc.run_stat, ENV_NAME)
 
     def test_get_status_code_info(self):
         pass
