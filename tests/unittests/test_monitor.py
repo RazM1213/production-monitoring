@@ -1,35 +1,101 @@
-import unittest
+import asyncio
 
-from config.config import BASE_URL, ROUTE_1
+import pytest
+
 from consts.status_codes import ALL_STATUS_CODES
 from monitor import Monitor
-from publish.kafka.kafka_publisher import KafkaPublisher
 from send.request import Request
 from utils.http_methods.http_methods_enum import HttpMethodsEnum
 
 
-class TestMonitor(unittest.TestCase):
-    REQUESTS = {
+@pytest.mark.asyncio
+def test_valid_send_requests_async_responses_count(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange & Act
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
+
+    # Assert
+    assert len(responses) == 10
+
+
+@pytest.mark.asyncio
+def test_valid_send_requests_async_responses_type(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange & Act
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
+
+    # Assert
+    for response in responses:
+        assert response.method == list(monitor.requests.values())[0].request_method.name
+        assert str(response.url) == list(monitor.requests.values())[0].url
+        assert response.status == 200
+
+
+@pytest.mark.asyncio
+def test_valid_get_contents_when_available(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange
+    monitor.requests = {
         "test_route_1": Request(
             request_method=HttpMethodsEnum.GET,
-            url=BASE_URL + ROUTE_1,
+            url="https://petstore.swagger.io/v2/pet/322717570?ID=1",
             status_codes=ALL_STATUS_CODES,
-            amount=10
+            amount=5
         )
     }
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
 
-    BOOTSTRAP_SERVERS = ["localhost:9092"]
-    TOPIC = "PMTestTopic"
-    PUBLISHER = KafkaPublisher(bootstrap_servers=BOOTSTRAP_SERVERS, topic=TOPIC)
+    # Act
+    monitor.get_contents(responses)
 
-    def setUp(self):
-        self.monitor = Monitor(self.REQUESTS, self.PUBLISHER)
+    # Assert
+    assert len(monitor.contents) == list(monitor.requests.values())[0].amount
+    for content in monitor.contents:
+        assert content == {'code': 1, 'type': 'error', 'message': 'Pet not found'}
 
-    def test_send_requests_async(self):
-        pass
 
-    def test_get_contents(self):
-        pass
+@pytest.mark.asyncio
+def test_valid_get_contents_when_not_available(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
 
-    def test_get_responses_values(self):
-        pass
+    # Act
+    monitor.get_contents(responses)
+
+    # Assert
+    assert monitor.contents == []
+
+
+@pytest.mark.asyncio
+def test_valid_get_responses_values_without_content(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
+
+    # Act
+    responses_values = monitor.get_responses_values(responses)
+
+    # Assert
+    index = 0
+    for response_values in responses_values:
+        assert response_values.status_code == responses[index].status
+        assert response_values.error_content is None
+
+
+@pytest.mark.asyncio
+def test_valid_get_responses_values_with_content(loop: asyncio.AbstractEventLoop, monitor: Monitor):
+    # Arrange
+    monitor.requests = {
+        "test_route_1": Request(
+            request_method=HttpMethodsEnum.GET,
+            url="https://petstore.swagger.io/v2/pet/322717570?ID=1",
+            status_codes=ALL_STATUS_CODES,
+            amount=5
+        )
+    }
+    responses = loop.run_until_complete(monitor.send_requests_async(list(monitor.requests.keys())[0]))
+
+    # Act
+    responses_values = monitor.get_responses_values(responses)
+
+    # Assert
+    index = 0
+    for response_values in responses_values:
+        assert response_values.status_code == responses[index].status
+        assert response_values.error_content == {'code': 1, 'type': 'error', 'message': 'Pet not found'}
