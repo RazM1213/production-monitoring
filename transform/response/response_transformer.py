@@ -74,7 +74,7 @@ class ResponseTransformer:
     #     return list(filter(lambda status: status.status_code == status_code, status_code_list))
 
     @staticmethod
-    def get_request_time(responses: ReportResponses) -> List[RequestTime]:
+    def get_request_time(responses: ReportResponses) -> RequestTime:
         request_times = list(map(lambda time: time.total_seconds(), responses.request_times))
         if len(request_times) != 0:
             return RequestTime(sum(request_times) / len(request_times), max(request_times), min(request_times))
