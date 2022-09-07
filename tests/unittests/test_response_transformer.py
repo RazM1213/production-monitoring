@@ -138,5 +138,20 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertEqual(elastic_report_response_doc.status_code_info.is_failed, True)
         self.assertEqual(elastic_report_response_doc.status_code_info.error_count, 1)
 
-    def test_get_request_time(self):
-        pass
+    def test_valid_default_get_request_time(self):
+        # Arrange
+        responses_values = [
+            ResponseValues(timedelta(microseconds=1000), 200),
+            ResponseValues(timedelta(microseconds=2000), 400),
+            ResponseValues(timedelta(microseconds=3000), 500)
+        ]
+        report_responses = ResponseTransformer.get_report_responses(responses_values=responses_values)
+
+        # Act
+        request_time = ResponseTransformer.get_request_time(report_responses)
+
+        # Assert
+        self.assertEqual(request_time.average, 0.002)
+        self.assertEqual(request_time.minimum, 0.001)
+        self.assertEqual(request_time.maximum, 0.003)
+
