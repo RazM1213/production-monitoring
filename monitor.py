@@ -22,7 +22,6 @@ class Monitor:
         self.start_time = None
         self.contents = []
 
-    # todo: talk with aviv about the rate limiter exception
     async def send_requests_async(self, route_name: str) -> List[ClientResponse]:
         async with aiohttp.ClientSession() as session:
             tasks = []
