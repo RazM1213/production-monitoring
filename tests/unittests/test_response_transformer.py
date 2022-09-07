@@ -77,8 +77,8 @@ class TestResponseTransformer(unittest.TestCase):
 
     @parameterized.parameterized.expand([
         (300,),
-        (300,),
-        (300,)
+        (400,),
+        (500,)
     ])
     def test_invalid_get_report_responses_non_success_status_code(self, status_code):
         # Arrange
