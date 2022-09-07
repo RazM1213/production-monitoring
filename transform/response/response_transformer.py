@@ -47,10 +47,10 @@ class ResponseTransformer:
     def get_elastic_report_doc(route_name: str, report_responses: ReportResponses) -> ElasticReportResponseDoc:
         status_codes_info: List[StatusCodeCounter] = []
         for status_code in report_responses.status_codes:
-            if len(ResponseTransformer.get_status_code_info(status_codes_info, status_code)) != 0:
-                ResponseTransformer.get_status_code_info(status_codes_info, status_code)[0].count += report_responses.status_codes[status_code]
-            else:
-                status_codes_info.append(StatusCodeCounter(status_code, report_responses.status_codes[status_code]))
+            # if len(ResponseTransformer.get_status_code_info(status_codes_info, status_code)) != 0:
+            #     ResponseTransformer.get_status_code_info(status_codes_info, status_code)[0].count += report_responses.status_codes[status_code]
+            # else:
+            status_codes_info.append(StatusCodeCounter(status_code, report_responses.status_codes[status_code]))
 
         error_requests_info: List[ErrorRequestInfo] = []
         error_index = 0
@@ -69,9 +69,9 @@ class ResponseTransformer:
             run_stat=ENV_NAME
         )
 
-    @staticmethod
-    def get_status_code_info(status_code_list: List[StatusCodeCounter], status_code: int) -> [List[StatusCodeCounter]]:
-        return list(filter(lambda status: status.status_code == status_code, status_code_list))
+    # @staticmethod
+    # def get_status_code_info(status_code_list: List[StatusCodeCounter], status_code: int) -> [List[StatusCodeCounter]]:
+    #     return list(filter(lambda status: status.status_code == status_code, status_code_list))
 
     @staticmethod
     def get_request_time(responses: ReportResponses) -> List[RequestTime]:
