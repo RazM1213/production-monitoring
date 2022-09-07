@@ -115,6 +115,7 @@ class TestResponseTransformer(unittest.TestCase):
         elastic_report_response_doc = ResponseTransformer.get_elastic_report_doc(route_name=route_name, report_responses=report_responses)
 
         # Assert
+        self.assertEqual(elastic_report_response_doc.name, route_name)
         self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].status_code, 200)
         self.assertEqual(elastic_report_response_doc.status_code_info.status_codes_counter[0].count, 1)
         self.assertEqual(elastic_report_response_doc.status_code_info.error_requests_info, [])
@@ -136,9 +137,6 @@ class TestResponseTransformer(unittest.TestCase):
         self.assertIsInstance(elastic_report_response_doc.status_code_info.error_requests_info[0], ErrorRequestInfo)
         self.assertEqual(elastic_report_response_doc.status_code_info.is_failed, True)
         self.assertEqual(elastic_report_response_doc.status_code_info.error_count, 1)
-
-    def test_get_status_code_info(self):
-        pass
 
     def test_get_request_time(self):
         pass
